@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import Blog from './components/Blog'
 import BlogForm from './components/BlogForm'
 import Notification from './components/Notification'
+import { createBlogActionCreator, getBlogsActionCreator } from './reducers/blogsReducer'
 import { setNotification } from './reducers/notificationReducer'
 import blogService from './services/blogs'
 import loginService from './services/login'
@@ -10,11 +11,12 @@ import storageService from './services/storage'
 
 
 const App = () => {
-  const [blogs, setBlogs] = useState([])
+  const [blogs_old, setBlogs_old] = useState([])
   const [user, setUser] = useState(null)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const dispatch = useDispatch()
+  const blogs = useSelector(s => s.blogs)
 
   useEffect(() => {
     const user = storageService.loadUser()
@@ -22,10 +24,9 @@ const App = () => {
   }, [])
 
   useEffect(() => {
-    blogService.getAll().then(blogs =>
-      setBlogs(blogs)
-    )
+    dispatch(getBlogsActionCreator())
   }, [])
+
 
   const notify = text => dispatch(setNotification(text))
 
@@ -76,6 +77,10 @@ const App = () => {
     notify('user logged out')
   }
 
+  const createBlog = async (blogInfo) => {
+    return await dispatch(createBlogActionCreator(blogInfo))
+  }
+
   const likeBlog = async blog => {
     const response = await blogService.updateBlog(blog.id, {
       user: blog.user.id,
@@ -85,11 +90,11 @@ const App = () => {
       url: blog.url
     })
 
-    const blogIndex = blogs.findIndex(b => b.id === blog.id)
-    const newBlogs = [...blogs]
+    const blogIndex = blogs_old.findIndex(b => b.id === blog.id)
+    const newBlogs = [...blogs_old]
     newBlogs[blogIndex] = response
     notify(`You like '${response.title}'`)
-    setBlogs(newBlogs)
+    setBlogs_old(newBlogs)
   }
 
   const removeBlog = async blog => {
@@ -102,45 +107,28 @@ const App = () => {
     }
 
     notify(`You deleted the blog '${blog.title}'`)
-    setBlogs(blogs.filter(b => b.id !== blog.id))
-  }
-
-  const createBlog = async (blogInfo) => {
-    const response = await blogService.createBlog(blogInfo)
-
-    if(response.error){
-      notify(response.error)
-      return false
-    }
-
-    setBlogs(blogs.concat(response))
-    notify(`a new blog is added (${response.title} By ${response.author})`)
-    return true
+    setBlogs_old(blogs_old.filter(b => b.id !== blog.id))
   }
 
   const byLikes = (ba, bb) => bb.likes - ba.likes
+  const sortedBlogs = [...blogs].sort(byLikes)
+
   return (
     <div>
       <h2>blogs</h2>
       <Notification/>
       <p>User {user.name} is logged in. <button onClick={logout}>logout</button></p>
       <BlogForm createBlog={createBlog}/>
-      {
-        blogs.length !== 0
-          ? <ul style={{ listStyle: 'none', padding: 0 }}>{
-            blogs
-              .sort(byLikes)
-              .map(blog => <Blog
-                key={blog.id}
-                blog={blog}
-                user={user}
-                handleRemove={removeBlog}
-                handleLikeClick={likeBlog}
-              />)
-          }</ul>
-          : ''
-      }
-
+      <ul style={{ listStyle: 'none', padding: 0 }}>{
+        sortedBlogs
+          .map(blog => <Blog
+            key={blog.id}
+            blog={blog}
+            user={user}
+            handleRemove={removeBlog}
+            handleLikeClick={likeBlog}
+          />)}
+      </ul>
     </div>
   )
 }

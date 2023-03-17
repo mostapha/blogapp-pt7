@@ -14,15 +14,10 @@ const config = () => ({
 })
 
 const createBlog = async blogInfo => {
-  try {
-    const response = await axios.post(baseUrl, blogInfo, config())
-    return response.data
-  } catch (error) {
-    if(error.response.data.error){
-      return error.response.data
-    }
-    console.error(error)
-  }
+  console.log('createBlog service')
+  const response = await axios.post(baseUrl, blogInfo, config())
+  console.log('end of createBlog service')
+  return response.data
 }
 
 const updateBlog = async (blogId, blogInfo) => {
