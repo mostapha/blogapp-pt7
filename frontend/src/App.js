@@ -3,15 +3,13 @@ import { useDispatch, useSelector } from 'react-redux'
 import Blog from './components/Blog'
 import BlogForm from './components/BlogForm'
 import Notification from './components/Notification'
-import { createBlogActionCreator, getBlogsActionCreator } from './reducers/blogsReducer'
+import { createBlogActionCreator, deleteBlogActionCreator, getBlogsActionCreator, likeBlogActionCreator } from './reducers/blogsReducer'
 import { setNotification } from './reducers/notificationReducer'
-import blogService from './services/blogs'
 import loginService from './services/login'
 import storageService from './services/storage'
 
 
 const App = () => {
-  const [blogs_old, setBlogs_old] = useState([])
   const [user, setUser] = useState(null)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
@@ -82,32 +80,13 @@ const App = () => {
   }
 
   const likeBlog = async blog => {
-    const response = await blogService.updateBlog(blog.id, {
-      user: blog.user.id,
-      likes: blog.likes + 1,
-      author: blog.author,
-      title: blog.title,
-      url: blog.url
-    })
-
-    const blogIndex = blogs_old.findIndex(b => b.id === blog.id)
-    const newBlogs = [...blogs_old]
-    newBlogs[blogIndex] = response
-    notify(`You like '${response.title}'`)
-    setBlogs_old(newBlogs)
+    dispatch(likeBlogActionCreator(blog))
   }
 
   const removeBlog = async blog => {
-    if(!window.confirm(`remove ${blog.title} by ${blog.author}`)) return
-
-    const response = await blogService.removeBlog(blog.id)
-    if(response.error){
-      notify(response.error)
-      return
+    if(window.confirm(`remove ${blog.title} by ${blog.author}`)){
+      dispatch(deleteBlogActionCreator(blog))
     }
-
-    notify(`You deleted the blog '${blog.title}'`)
-    setBlogs_old(blogs_old.filter(b => b.id !== blog.id))
   }
 
   const byLikes = (ba, bb) => bb.likes - ba.likes

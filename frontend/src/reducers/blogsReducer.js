@@ -13,11 +13,20 @@ const slice = createSlice({
     },
     addBlogAction(state, action) {
       state.push(action.payload)
+    },
+    deleteBlogAction(state, action){
+      const id = action.payload
+      return state.filter(b => b.id !== id)
+    },
+    likeBlogAction(state, action){
+      const blog = action.payload
+      const blog_to_update = state.find(b => b.id === blog.id)
+      blog_to_update.likes = blog.likes
     }
   },
 })
 
-const { initializeBlogsAction, addBlogAction } = slice.actions
+const { initializeBlogsAction, addBlogAction, deleteBlogAction, likeBlogAction } = slice.actions
 
 export const getBlogsActionCreator = () => {
   return async dispatch => {
@@ -36,6 +45,37 @@ export const createBlogActionCreator = (blogInfo) => {
     } catch(err) {
       dispatch(setNotification('there was error creating blog'))
       return false
+    }
+  }
+}
+
+export const deleteBlogActionCreator = blog => {
+  return async dispatch => {
+    try {
+      await blogService.removeBlog(blog.id)
+      dispatch(deleteBlogAction(blog.id))
+      dispatch(setNotification(`You deleted the blog '${blog.title}'`))
+    } catch(err) {
+      dispatch(setNotification('there was error deleting the blog'))
+    }
+  }
+}
+
+export const likeBlogActionCreator = blog => {
+  return async dispatch => {
+    try {
+      const updatedBlog = await blogService.updateBlog(blog.id, {
+        user: blog.user.id,
+        likes: blog.likes + 1,
+        author: blog.author,
+        title: blog.title,
+        url: blog.url
+      })
+
+      dispatch(likeBlogAction(updatedBlog))
+      dispatch(setNotification(`You liked '${blog.title}'`))
+    } catch(err) {
+      dispatch(setNotification('there was error updating the blog data'))
     }
   }
 }

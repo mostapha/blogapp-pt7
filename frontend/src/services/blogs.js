@@ -14,34 +14,18 @@ const config = () => ({
 })
 
 const createBlog = async blogInfo => {
-  console.log('createBlog service')
   const response = await axios.post(baseUrl, blogInfo, config())
-  console.log('end of createBlog service')
   return response.data
 }
 
 const updateBlog = async (blogId, blogInfo) => {
-  try {
-    const response = await axios.put(`${baseUrl}/${blogId}`, blogInfo, config())
-    return response.data
-  } catch (error) {
-    if(error.response.data.error){
-      return error.response.data
-    }
-    console.error(error)
-  }
+  const response = await axios.put(`${baseUrl}/${blogId}`, blogInfo, config())
+  return response.data
 }
 
 const removeBlog = async (blogId) => {
-  try {
-    const response = await axios.delete(`${baseUrl}/${blogId}`, config())
-    return response.data
-  } catch (error) {
-    if(error.response.data.error){
-      return error.response.data
-    }
-    console.error(error)
-  }
+  const response = await axios.delete(`${baseUrl}/${blogId}`, config())
+  return response.data
 }
 
 export default { getAll, createBlog, updateBlog, removeBlog }
