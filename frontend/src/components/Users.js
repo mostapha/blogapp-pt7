@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
 import usersApi from '../services/users'
-const UsersView = () => {
+const Users = () => {
   const [users, setUsers] = useState([])
   useEffect(() => {
     usersApi.getUsers().then(users => {
@@ -14,16 +15,20 @@ const UsersView = () => {
       <h2>Users</h2>
       {users.length === 0 ? <div>Loading...</div> : (
         <table>
-          <tr>
-            <th>name</th><th>blogs created</th>
-          </tr>
-          {users.map(user => (
-            <tr key={user.id}><td>{user.name}</td><td>{user.blogs.length}</td></tr>
-          ))}
+          <thead>
+            <tr>
+              <th>name</th><th>blogs created</th>
+            </tr>
+          </thead>
+          <tbody>
+            {users.map(user => (
+              <tr key={user.id}><td><Link to={`/users/${user.id}`}>{user.name}</Link></td><td>{user.blogs.length}</td></tr>
+            ))}
+          </tbody>
         </table>
       )}
     </>
   )
 }
 
-export default UsersView
+export default Users

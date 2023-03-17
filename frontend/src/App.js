@@ -5,9 +5,10 @@ import { setNotification } from './reducers/notificationReducer'
 import { clearUserAction, setUserAction } from './reducers/userReducer'
 import loginService from './services/login'
 import storageService from './services/storage'
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
 import Users from './components/Users'
 import Homepage from './components/Homepage'
+import User from './components/User'
 
 
 const App = () => {
@@ -74,12 +75,17 @@ const App = () => {
     <Router>
       <div>
         <h2>blogs</h2>
+        <nav style={{ display: 'flex', gap: '10px' }}>
+          <Link to={'/'}>Home</Link>
+          <Link to={'/users'}>Users</Link>
+        </nav>
         <Notification/>
         <p>User {user.name} is logged in. <button onClick={logout}>logout</button></p>
 
         <Routes>
           <Route path="/" element={<Homepage />} />
           <Route path="/users" element={<Users />} />
+          <Route path="/users/:id" element={<User/>} />
         </Routes>
 
       </div>
