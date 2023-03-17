@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
-import PropTypes from 'prop-types'
+import { useDispatch, useSelector } from 'react-redux'
+import { clearNotification } from '../reducers/notificationReducer'
 
 const NotifcationStyle = {
   background: '#eae1f9',
@@ -8,14 +9,18 @@ const NotifcationStyle = {
   borderRadius: '3px'
 }
 
-const Notification = ({ setNotification, notification }) => {
+const Notification = () => {
+  const dispatch = useDispatch()
+  const notification = useSelector(s => s.notification)
+
   useEffect(() => {
-    if(notification === '') return
-    let timeout = setTimeout(() => {
-      setNotification('')
-    }, 5000)
-    return () => {
-      clearTimeout(timeout)
+    if(notification !== ''){
+      let timeout = setTimeout(() => {
+        dispatch(clearNotification())
+      }, 5000)
+      return () => {
+        clearTimeout(timeout)
+      }
     }
   }, [notification])
 
@@ -24,11 +29,6 @@ const Notification = ({ setNotification, notification }) => {
   }
 
   return <div style={NotifcationStyle}>{notification}</div>
-}
-
-Notification.propTypes = {
-  setNotification: PropTypes.func.isRequired,
-  notification: PropTypes.string.isRequired
 }
 
 export default Notification

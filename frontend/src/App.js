@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react'
+import { useDispatch } from 'react-redux'
 import Blog from './components/Blog'
 import BlogForm from './components/BlogForm'
 import Notification from './components/Notification'
+import { setNotification } from './reducers/notificationReducer'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import storageService from './services/storage'
@@ -12,8 +14,7 @@ const App = () => {
   const [user, setUser] = useState(null)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-
-  const [notification, setNotification] = useState('')
+  const dispatch = useDispatch()
 
   useEffect(() => {
     const user = storageService.loadUser()
@@ -26,7 +27,7 @@ const App = () => {
     )
   }, [])
 
-  const notify = text => setNotification(text)
+  const notify = text => dispatch(setNotification(text))
 
   if (user === null) {
     const login = async event => {
@@ -47,7 +48,7 @@ const App = () => {
     return (
       <div>
         <h2>Log in to application</h2>
-        <Notification notification={notification} setNotification={setNotification}/>
+        <Notification/>
         <form onSubmit={login}>
           <div>username: <input
             name='username'
@@ -87,6 +88,7 @@ const App = () => {
     const blogIndex = blogs.findIndex(b => b.id === blog.id)
     const newBlogs = [...blogs]
     newBlogs[blogIndex] = response
+    notify(`You like '${response.title}'`)
     setBlogs(newBlogs)
   }
 
@@ -99,6 +101,7 @@ const App = () => {
       return
     }
 
+    notify(`You deleted the blog '${blog.title}'`)
     setBlogs(blogs.filter(b => b.id !== blog.id))
   }
 
@@ -115,17 +118,18 @@ const App = () => {
     return true
   }
 
+  const byLikes = (ba, bb) => bb.likes - ba.likes
   return (
     <div>
       <h2>blogs</h2>
-      <Notification notification={notification} setNotification={setNotification}/>
+      <Notification/>
       <p>User {user.name} is logged in. <button onClick={logout}>logout</button></p>
       <BlogForm createBlog={createBlog}/>
       {
         blogs.length !== 0
           ? <ul style={{ listStyle: 'none', padding: 0 }}>{
             blogs
-              .sort((b1, b2) => b2.likes - b1.likes)
+              .sort(byLikes)
               .map(blog => <Blog
                 key={blog.id}
                 blog={blog}
