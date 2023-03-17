@@ -5,20 +5,22 @@ import BlogForm from './components/BlogForm'
 import Notification from './components/Notification'
 import { createBlogActionCreator, deleteBlogActionCreator, getBlogsActionCreator, likeBlogActionCreator } from './reducers/blogsReducer'
 import { setNotification } from './reducers/notificationReducer'
+import { clearUserAction, setUserAction } from './reducers/userReducer'
 import loginService from './services/login'
 import storageService from './services/storage'
 
 
 const App = () => {
-  const [user, setUser] = useState(null)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const dispatch = useDispatch()
   const blogs = useSelector(s => s.blogs)
+  const user = useSelector(s => s.user)
 
+  console.log('user', user)
   useEffect(() => {
     const user = storageService.loadUser()
-    setUser(user)
+    dispatch(setUserAction(user))
   }, [])
 
   useEffect(() => {
@@ -39,7 +41,7 @@ const App = () => {
       }
 
       console.log('loginRes', loginRes)
-      setUser(loginRes)
+      dispatch(setUserAction(loginRes))
       storageService.saveUser(loginRes)
       notify(`you are logged in as ${loginRes.username}`)
     }
@@ -70,7 +72,7 @@ const App = () => {
   }
 
   const logout = () => {
-    setUser(null)
+    dispatch(clearUserAction(null))
     storageService.removeUser()
     notify('user logged out')
   }
