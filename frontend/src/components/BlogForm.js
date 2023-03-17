@@ -1,14 +1,20 @@
 import { useRef, useState } from 'react'
 import FormInput from './FormInput'
 import Togglable from './Togglable'
-import PropTypes from 'prop-types'
+import { useDispatch } from 'react-redux'
+import { createBlogActionCreator } from '../reducers/blogsReducer'
 
-const BlogForm = ({ createBlog }) => {
+const BlogForm = () => {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
+  const dispatch = useDispatch()
 
   const addBlogFormRef = useRef()
+
+  const createBlog = async (blogInfo) => {
+    return await dispatch(createBlogActionCreator(blogInfo))
+  }
 
   const handleSubmit = async (event) => {
     event.preventDefault()
@@ -41,11 +47,6 @@ const BlogForm = ({ createBlog }) => {
       </section>
     </Togglable>
   )
-}
-
-
-BlogForm.propTypes = {
-  createBlog: PropTypes.func.isRequired
 }
 
 export default BlogForm

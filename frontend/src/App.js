@@ -1,32 +1,25 @@
 import { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import Blog from './components/Blog'
-import BlogForm from './components/BlogForm'
 import Notification from './components/Notification'
-import { createBlogActionCreator, deleteBlogActionCreator, getBlogsActionCreator, likeBlogActionCreator } from './reducers/blogsReducer'
 import { setNotification } from './reducers/notificationReducer'
 import { clearUserAction, setUserAction } from './reducers/userReducer'
 import loginService from './services/login'
 import storageService from './services/storage'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import Users from './components/Users'
+import Homepage from './components/Homepage'
 
 
 const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const dispatch = useDispatch()
-  const blogs = useSelector(s => s.blogs)
   const user = useSelector(s => s.user)
 
-  console.log('user', user)
   useEffect(() => {
     const user = storageService.loadUser()
     dispatch(setUserAction(user))
   }, [])
-
-  useEffect(() => {
-    dispatch(getBlogsActionCreator())
-  }, [])
-
 
   const notify = text => dispatch(setNotification(text))
 
@@ -77,40 +70,20 @@ const App = () => {
     notify('user logged out')
   }
 
-  const createBlog = async (blogInfo) => {
-    return await dispatch(createBlogActionCreator(blogInfo))
-  }
-
-  const likeBlog = async blog => {
-    dispatch(likeBlogActionCreator(blog))
-  }
-
-  const removeBlog = async blog => {
-    if(window.confirm(`remove ${blog.title} by ${blog.author}`)){
-      dispatch(deleteBlogActionCreator(blog))
-    }
-  }
-
-  const byLikes = (ba, bb) => bb.likes - ba.likes
-  const sortedBlogs = [...blogs].sort(byLikes)
-
   return (
-    <div>
-      <h2>blogs</h2>
-      <Notification/>
-      <p>User {user.name} is logged in. <button onClick={logout}>logout</button></p>
-      <BlogForm createBlog={createBlog}/>
-      <ul style={{ listStyle: 'none', padding: 0 }}>{
-        sortedBlogs
-          .map(blog => <Blog
-            key={blog.id}
-            blog={blog}
-            user={user}
-            handleRemove={removeBlog}
-            handleLikeClick={likeBlog}
-          />)}
-      </ul>
-    </div>
+    <Router>
+      <div>
+        <h2>blogs</h2>
+        <Notification/>
+        <p>User {user.name} is logged in. <button onClick={logout}>logout</button></p>
+
+        <Routes>
+          <Route path="/" element={<Homepage />} />
+          <Route path="/users" element={<Users />} />
+        </Routes>
+
+      </div>
+    </Router>
   )
 }
 
