@@ -9,6 +9,7 @@ import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
 import Users from './components/Users'
 import Homepage from './components/Homepage'
 import User from './components/User'
+import SingleBlog from './components/SingleBlog'
 
 
 const App = () => {
@@ -86,6 +87,7 @@ const App = () => {
           <Route path="/" element={<Homepage />} />
           <Route path="/users" element={<Users />} />
           <Route path="/users/:id" element={<User/>} />
+          <Route path="/blogs/:id" element={<SingleBlog/>} />
         </Routes>
 
       </div>

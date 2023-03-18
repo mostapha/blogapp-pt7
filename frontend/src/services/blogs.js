@@ -2,9 +2,9 @@ import axios from 'axios'
 import storageService from '../services/storage'
 const baseUrl = '/api/blogs'
 
-const getAll = () => {
-  const request = axios.get(baseUrl)
-  return request.then(response => response.data)
+const getAll = async () => {
+  const response = await axios.get(baseUrl)
+  return response.data
 }
 
 const config = () => ({
@@ -28,4 +28,9 @@ const removeBlog = async (blogId) => {
   return response.data
 }
 
-export default { getAll, createBlog, updateBlog, removeBlog }
+const getBlog = async (blogId) => {
+  const response = await axios.get(`${baseUrl}/${blogId}`, config())
+  return response.data
+}
+
+export default { getAll, createBlog, updateBlog, removeBlog, getBlog }

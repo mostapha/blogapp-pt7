@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { deleteBlogActionCreator, getBlogsActionCreator, likeBlogActionCreator } from '../reducers/blogsReducer'
+import { deleteBlogActionCreator, getBlogsActionCreator } from '../reducers/blogsReducer'
 import Blog from './Blog'
 import BlogForm from './BlogForm'
 
@@ -13,9 +13,7 @@ const Homepage = () => {
     dispatch(getBlogsActionCreator())
   }, [])
 
-  const likeBlog = async blog => {
-    dispatch(likeBlogActionCreator(blog))
-  }
+
 
   const removeBlog = async blog => {
     if(window.confirm(`remove ${blog.title} by ${blog.author}`)){
@@ -36,7 +34,6 @@ const Homepage = () => {
             blog={blog}
             user={user}
             handleRemove={removeBlog}
-            handleLikeClick={likeBlog}
           />)}
       </ul>
     </>
