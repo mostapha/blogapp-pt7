@@ -75,13 +75,13 @@ const App = () => {
   return (
     <Router>
       <div>
-        <h2>blogs</h2>
-        <nav style={{ display: 'flex', gap: '10px' }}>
+        <h2>Blog App</h2>
+        <nav style={{ display: 'flex', gap: '10px', background: '#f3f6fd', padding: '10px' }}>
           <Link to={'/'}>Home</Link>
           <Link to={'/users'}>Users</Link>
+          <p style={{ margin: 0 }}>{user.name} is logged in. <button onClick={logout}>logout</button></p>
         </nav>
         <Notification/>
-        <p>User {user.name} is logged in. <button onClick={logout}>logout</button></p>
 
         <Routes>
           <Route path="/" element={<Homepage />} />
