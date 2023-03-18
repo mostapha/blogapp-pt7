@@ -3,6 +3,7 @@ import { useDispatch } from 'react-redux'
 import { useParams } from 'react-router-dom'
 import { likeBlogActionCreator } from '../reducers/blogsReducer'
 import blogsApi from '../services/blogs'
+import Comments from './Comments'
 
 const SingleBlog = () => {
   const blogId = useParams().id
@@ -37,6 +38,7 @@ const SingleBlog = () => {
       <div><a href={blog.url}>{blog.url}</a></div>
       <div>{blog.likes} likes <button onClick={() => likeBlog(blog)}>like</button></div>
       <div>added by {blog.user.name}</div>
+      <Comments blogId={blog.id}/>
     </>
   )
 }

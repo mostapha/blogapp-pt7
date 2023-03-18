@@ -33,4 +33,9 @@ const getBlog = async (blogId) => {
   return response.data
 }
 
-export default { getAll, createBlog, updateBlog, removeBlog, getBlog }
+const getBlogComments = async blogId => {
+  const response = await axios.get(`${baseUrl}/${blogId}/comments`, config())
+  return response.data
+}
+
+export default { getAll, createBlog, updateBlog, removeBlog, getBlog, getBlogComments }
