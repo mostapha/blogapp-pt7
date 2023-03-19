@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+import { ListGroup } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
 import { deleteBlogActionCreator, getBlogsActionCreator } from '../reducers/blogsReducer'
 import Blog from './Blog'
@@ -27,7 +28,7 @@ const Homepage = () => {
   return (
     <>
       <BlogForm/>
-      <ul style={{ listStyle: 'none', padding: 0 }}>{
+      <ListGroup>{
         sortedBlogs
           .map(blog => <Blog
             key={blog.id}
@@ -35,7 +36,7 @@ const Homepage = () => {
             user={user}
             handleRemove={removeBlog}
           />)}
-      </ul>
+      </ListGroup>
     </>
   )
 }

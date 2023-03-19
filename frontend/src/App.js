@@ -11,6 +11,9 @@ import Homepage from './components/Homepage'
 import User from './components/User'
 import SingleBlog from './components/SingleBlog'
 
+import { Button, Container, Nav, Navbar } from 'react-bootstrap'
+
+
 
 const App = () => {
   const [username, setUsername] = useState('')
@@ -74,22 +77,29 @@ const App = () => {
 
   return (
     <Router>
+      <Navbar expand="lg" bg="dark" variant="dark" className='mb-3'>
+        <Container>
+          <Link className='navbar-brand' to={'/'}>Blog App</Link>
+          <Navbar.Toggle aria-controls="basic-navbar-nav" />
+          <Navbar.Collapse id="basic-navbar-nav">
+            <Nav className="me-auto">
+              <Link className='nav-link' to={'/'} role="button" tabIndex="0">Blogs</Link>
+              <Link className='nav-link' to={'/users'} role="button" tabIndex="0">Users</Link>
+            </Nav>
+            <div className='text-white'>{user.name} logged in<Button className='ms-2' variant="light" onClick={logout} size="sm">logout</Button></div>
+          </Navbar.Collapse>
+        </Container>
+      </Navbar>
       <div>
-        <h2>Blog App</h2>
-        <nav style={{ display: 'flex', gap: '10px', background: '#f3f6fd', padding: '10px' }}>
-          <Link to={'/'}>Home</Link>
-          <Link to={'/users'}>Users</Link>
-          <p style={{ margin: 0 }}>{user.name} is logged in. <button onClick={logout}>logout</button></p>
-        </nav>
-        <Notification/>
-
-        <Routes>
-          <Route path="/" element={<Homepage />} />
-          <Route path="/users" element={<Users />} />
-          <Route path="/users/:id" element={<User/>} />
-          <Route path="/blogs/:id" element={<SingleBlog/>} />
-        </Routes>
-
+        <div className='container'>
+          <Notification/>
+          <Routes>
+            <Route path="/" element={<Homepage />} />
+            <Route path="/users" element={<Users />} />
+            <Route path="/users/:id" element={<User/>} />
+            <Route path="/blogs/:id" element={<SingleBlog/>} />
+          </Routes>
+        </div>
       </div>
     </Router>
   )

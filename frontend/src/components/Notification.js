@@ -1,13 +1,9 @@
 import { useEffect } from 'react'
+import { Alert } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
 import { clearNotification } from '../reducers/notificationReducer'
 
-const NotifcationStyle = {
-  background: '#eae1f9',
-  padding: '13px 15px',
-  margin: '15px 0',
-  borderRadius: '3px'
-}
+const NOTIFICATION_TIMEOUT_SECONDS = 5
 
 const Notification = () => {
   const dispatch = useDispatch()
@@ -17,7 +13,7 @@ const Notification = () => {
     if(notification !== ''){
       let timeout = setTimeout(() => {
         dispatch(clearNotification())
-      }, 5000)
+      }, NOTIFICATION_TIMEOUT_SECONDS * 1000)
       return () => {
         clearTimeout(timeout)
       }
@@ -28,7 +24,9 @@ const Notification = () => {
     return ''
   }
 
-  return <div style={NotifcationStyle}>{notification}</div>
+  return  (
+    <Alert variant='secondary'>{notification}</Alert>
+  )
 }
 
 export default Notification

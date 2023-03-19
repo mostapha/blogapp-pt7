@@ -34,7 +34,7 @@ const SingleBlog = () => {
 
   return (
     <>
-      <h2>{blog.title}</h2>
+      <h1>{blog.title}</h1>
       <div><a href={blog.url}>{blog.url}</a></div>
       <div>{blog.likes} likes <button onClick={() => likeBlog(blog)}>like</button></div>
       <div>added by {blog.user.name}</div>
